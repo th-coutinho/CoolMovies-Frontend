@@ -11,7 +11,17 @@ const movieReviewsStore = (store) => {
     }
   ))
 
-  
+  store.on('setMovieReviews', ({ _ }, collection) => {
+    return {
+      movieReviews: collection
+    }
+    console.log('getting here')
+    // const serializedMovieReviews = serializeMovieReview(collection);
+
+    // return {
+    //   movieReviews: serializedMovieReviews
+    // }
+  });
 }
 
 export const store = createStoreon([
