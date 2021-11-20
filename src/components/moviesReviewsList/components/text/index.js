@@ -1,35 +1,45 @@
-import { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { UPDATE_MOVIE_REVIEW_BY_ID } from 'operations/mutations/index';
+import { useState, useEffect } from 'react';
+import { useStoreon } from 'storeon/react';
+import PubSub from 'pubsub-js';
 
-export default function Text({ text }) {
-  const [isEditing, setIsEditing] = useState(false);
+export default function Text({ id, text }) {
+  const { editingId, hasChanges, dispatch } = useStoreon('editingId', 'hasChanges');
   const [textValue, setTextValue] = useState(text);
-  const [updateMovieReview, { data, loading, error }] = useMutation(UPDATE_MOVIE_REVIEW_BY_ID);
+  const isEditing = editingId === id;
+
 
   const handleChange = (e) => {
-    setTextValue(e.target.value);
-    
+    const reviewText = e.target.value;
+    if (!hasChanges) dispatch('setHasChanges', true);
+
+    setTextValue(reviewText);
   };
 
-  const handleBlur = (e) => {
-    setTextValue(e.target.value);
-    // input: { id: "335f0ff2-7f96-413f-8d26-6224039356c4", movieReviewPatch: { body: "teste" } 
-    updateMovieReview({
-      variables: {
-        id: '335f0ff2-7f96-413f-8d26-6224039356c4',
-        body: textValue
-      }
-    }).then(() => console.log("CHEGANDO AQUI NO THEN"));
-
-    console.log(data)
+  const handleBlur = () => {
+    dispatch('setReviewEditionValues', { body: textValue });
   };
-  
-  const toggleEditing = () => { setIsEditing(!isEditing) };
+
+
+  useEffect(() => {
+    if (isEditing) {
+      PubSub.subscribe('reset-fields', () => {
+        setTextValue(text);
+      });
+    }
+  });
 
   if (isEditing) {
-    return (<input onBlur={handleBlur} onChange={handleChange} value={textValue}/>)
+    return (
+      <textarea
+        className="border border-blue-500 py-1 px-2 rounded-lg w-full resize-none outline-none text-xs 2xl:text-sm h-80 xs:h-60 overflow-y-auto font-medium leading-4 text-blue-500 placeholder-blue-300"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        value={textValue}
+        spellCheck="false"
+        maxLength="445"
+        placeholder="Example: Really nice review here!"/>
+    )
   }
 
-  return (<p className="text-sm font-medium leading-5 text-gray-600" onClick={toggleEditing}>"{textValue}"</p>)
-}
+  return (<p className="text-xs 2xl:text-sm xs:h-60 p-2 overflow-y-auto break-words font-medium leading-4 text-gray-600">{textValue}</p>)
+};

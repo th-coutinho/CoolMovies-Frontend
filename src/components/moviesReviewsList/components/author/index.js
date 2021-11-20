@@ -12,8 +12,8 @@ export default function Score({ name }) {
   const avatarSrc = getAvatarSrc();
 
   return (
-    <div className="flex items-center space-x-2"> 
-      <div className="flex flex-shrink-0 rounded-full border border-gray-200">
+    <div className="flex items-center space-x-2">
+      <div className="flex flex-shrink-0 rounded-full">
         <img
           className="w-8 h-8 object-cover rounded-full"
           src={avatarSrc}
@@ -21,9 +21,9 @@ export default function Score({ name }) {
         />
       </div>
       <p className="text-sm font-semibold leading-5 text-gray-900">{name}</p>
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0 text-green-500">
         <FaCheckCircle/>
       </div>
     </div>
   )
-}
+};
