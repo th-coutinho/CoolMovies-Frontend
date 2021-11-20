@@ -1,6 +1,6 @@
 const defaultAlertConfig = {
   shape: 'pill',
-  duration: 40000,
+  duration: 4000,
   speed: 1000,
   positionX: 'end',
   positionY: 'top',
