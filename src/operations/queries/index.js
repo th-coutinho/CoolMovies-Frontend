@@ -4,6 +4,7 @@ export const ALL_MOVIE_REVIEWS = gql`
     query {
       allMovieReviews {
         nodes {
+          id
           title
           body
           rating
